@@ -1,20 +1,47 @@
 pipeline {
-	agent any
-	stages {
-		stage('build') {
-			steps {
-				echo 'building the application'
-				}
-		}
-		stage('test'){
-			steps {
-				echo 'testing the app'
-			}
-			}
-		stage('deploy') {
-			steps {
-				echo 'deploy the app'
-				}
-				}
-		}
+    agent any
+    
+    parameters {
+        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: 'choice')
+        booleanParam(name: 'deploy', defaultValue: false, description: 'booleanvalue')
+    }
+    
+    stages {
+        
+        stage('build') {
+            steps {
+                
+                echo 'building process has started and ended'
+                echo "the version ${params.VERSION}"
+                
+            }
+        }
+        
+        
+        stage('test') {
+            steps {
+                echo "testing the application"
+                
+            }
+        }
+        
+        stage('deploy') {
+            
+            when {
+                expression {
+                    params.deploy
+                }
+            }
+            steps {
+                echo " finally stage which is to deploy"
+                
+            }
+        }
+    }
+    post {
+        success { 
+            echo ' All the stages were executed successfully.'
+    }
+    }
 }
+
